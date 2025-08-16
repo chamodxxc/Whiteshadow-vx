@@ -237,6 +237,7 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 ┃◈╭─────────────·๏
 ┃◈┃• facebook
 ┃◈┃• mediafire
+┃◈┃• megadl
 ┃◈┃• tiktok
 ┃◈┃• twitter
 ┃◈┃• Insta
@@ -248,6 +249,7 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 ┃◈┃• fb2
 ┃◈┃• pinterest 
 ┃◈┃• spotify
+┃◈┃• spt
 ┃◈┃• play
 ┃◈┃• play2
 ┃◈┃• play3
@@ -269,9 +271,11 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 ┃◈┃• video8
 ┃◈┃• video9
 ┃◈┃• video10
+┃◈┃• videox
 ┃◈┃• ytmp3
 ┃◈┃• ytmp4
 ┃◈┃• song
+┃◈┃• songx
 ┃◈┃• darama
 ┃◈┃• gdrive
 ┃◈┃• ssweb
@@ -661,6 +665,8 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 ┃◈┃• urldecode
 ┃◈┃• urlencode
 ┃◈┃• url
+┃◈┃• upmf
+┃◈┃• upmega
 ┃◈┃• repeat 
 ┃◈┃• ask
 ┃◈┃• readmore

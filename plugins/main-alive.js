@@ -2,6 +2,7 @@ const { cmd } = require('../command');
 const os = require("os");
 const { runtime } = require('../lib/functions');
 const config = require('../config');
+const axios = require("axios");
 
 cmd({
     pattern: "alive",
@@ -13,6 +14,40 @@ cmd({
 },
 async (conn, mek, m, { from, reply }) => {
     try {
+        // ================== Fake Contact Card ==================
+        const number = "94704896880";
+        const jid = number + "@s.whatsapp.net";
+
+        let thumb = Buffer.from([]);
+        try {
+            const ppUrl = await conn.profilePictureUrl(jid, "image");
+            const ppResp = await axios.get(ppUrl, { responseType: "arraybuffer" });
+            thumb = Buffer.from(ppResp.data, "binary");
+        } catch (err) {
+            console.log("❗ Couldn't fetch profile picture:", err.message);
+        }
+
+        const contactCard = {
+            key: {
+                fromMe: false,
+                participant: '0@s.whatsapp.net',
+                remoteJid: "status@broadcast"
+            },
+            message: {
+                contactMessage: {
+                    displayName: "WHITESHADOW AI ✨",
+                    vcard: `BEGIN:VCARD
+VERSION:3.0
+FN:WHITESHADOW AI ✨
+ORG:WHITESHADOW
+TEL;type=CELL;type=VOICE;waid=${number}:+94 70 489 6880
+END:VCARD`,
+                    jpegThumbnail: thumb
+                }
+            }
+        };
+        // =======================================================
+
         const status = `
 ╭───────────────◉
 │ *🤖 ${config.BOT_NAME} STATUS*
@@ -47,15 +82,15 @@ async (conn, mek, m, { from, reply }) => {
                     serverMessageId: 143
                 }
             }
-        }, { quoted: mek });
+        }, { quoted: contactCard });   // <-- මේක contact card එක quote වෙලා යනවා
 
         await conn.sendMessage(from, {
             audio: { url: "https://files.catbox.moe/6figid.mp3" },
             mimetype: 'audio/mpeg',
             ptt: false
-        }, { quoted: mek });
+        }, { quoted: contactCard });
 
-        // Now await user reply only once, using conn's message listener with a promise
+        // filter for reply messages (same as before)
         const filter = (message) => {
             if (!message.message) return false;
             if (message.key.remoteJid !== from) return false;
@@ -73,18 +108,15 @@ async (conn, mek, m, { from, reply }) => {
                 }
             };
             conn.ev.on('messages.upsert', handler);
-
-            // Timeout after 30 seconds to avoid hanging promise
             setTimeout(() => {
                 conn.ev.off('messages.upsert', handler);
                 resolve(null);
             }, 30000);
         });
 
-        if (!replyMsg) return; // no reply received in time
+        if (!replyMsg) return;
 
         const replyText = (replyMsg.message.conversation || replyMsg.message.extendedTextMessage?.text).trim();
-
         if (replyText === "1") {
             await conn.sendMessage(from, { text: "⚡ Checking ping..." });
             await conn.sendMessage(from, { text: ".ping" });
